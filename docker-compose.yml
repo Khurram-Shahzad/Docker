@@ -1,0 +1,87 @@
+version: '3.9'
+
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: dockerfiles/nginx.dockerfile
+    container_name: ${APP_NAME}-nginx
+    ports:
+      - 80:80
+    volumes:
+      - ../:/var/www/html
+    depends_on:
+      - php
+      - mysql
+    networks:
+      - app-network
+
+  php:
+    build:
+      context: .
+      dockerfile: dockerfiles/php.dockerfile
+    container_name: ${APP_NAME}-php
+    volumes:
+      - ../:/var/www/html
+    networks:
+      - app-network
+
+  mysql:
+    build: 
+      context: .
+      dockerfile: dockerfiles/mysql.dockerfile
+    container_name: ${APP_NAME}-database
+    restart: unless-stopped
+    environment:
+      - MARIADB_DATABASE=laravel
+      - MARIADB_USER=laravel
+      - MARIADB_PASSWORD=secret
+      - MARIADB_ROOT_PASSWORD=secret
+    ports:
+      - 3306:3306
+    volumes:
+      - ./${APP_NAME}-mysql:/var/lib/mysql
+    networks:
+      - app-network
+
+  npm:
+    image: node:current-alpine
+    container_name: ${APP_NAME}-npm
+    volumes:
+      - ../:/var/www/html
+    working_dir: /var/www/html
+    entrypoint: ["npm"]
+    networks:
+      - app-network
+
+  composer:
+    image: composer:latest
+    container_name: ${APP_NAME}-composer
+    volumes:
+      - ../:/var/www/html
+    working_dir: /var/www/html
+    depends_on:
+      - php
+      - mysql
+    networks:
+      - app-network
+  
+  artisan:
+    build:
+      context: .
+      dockerfile: dockerfiles/php.dockerfile
+    container_name: ${APP_NAME}-artisan
+    volumes:
+      - ../:/var/www/html
+    working_dir: /var/www/html
+    depends_on:
+      - php
+      - mysql
+    entrypoint: ["php", "/var/www/html/artisan"]
+    networks:
+      - app-network
+
+
+networks:
+  app-network:
+    driver: bridge
