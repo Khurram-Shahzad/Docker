@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: dockerfiles/nginx.dockerfile
-    container_name: ${APP_NAME}-nginx
+    container_name: ${APP_NAME:-docker}-nginx
     ports:
       - 80:80
     volumes:
@@ -20,7 +20,7 @@ services:
     build:
       context: .
       dockerfile: dockerfiles/php.dockerfile
-    container_name: ${APP_NAME}-php
+    container_name: ${APP_NAME:-docker}-php
     volumes:
       - ../:/var/www/html
     networks:
@@ -30,7 +30,7 @@ services:
     build: 
       context: .
       dockerfile: dockerfiles/mysql.dockerfile
-    container_name: ${APP_NAME}-database
+    container_name: ${APP_NAME:-docker}-database
     restart: unless-stopped
     environment:
       - MARIADB_DATABASE=laravel
@@ -46,7 +46,7 @@ services:
 
   npm:
     image: node:current-alpine
-    container_name: ${APP_NAME}-npm
+    container_name: ${APP_NAME:-docker}-npm
     volumes:
       - ../:/var/www/html
     working_dir: /var/www/html
@@ -56,7 +56,7 @@ services:
 
   composer:
     image: composer:latest
-    container_name: ${APP_NAME}-composer
+    container_name: ${APP_NAME:-docker}-composer
     volumes:
       - ../:/var/www/html
     working_dir: /var/www/html
@@ -70,7 +70,7 @@ services:
     build:
       context: .
       dockerfile: dockerfiles/php.dockerfile
-    container_name: ${APP_NAME}-artisan
+    container_name: ${APP_NAME:-docker}-artisan
     volumes:
       - ../:/var/www/html
     working_dir: /var/www/html
