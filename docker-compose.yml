@@ -27,16 +27,16 @@ services:
       - app-network
 
   mysql:
-    build: 
+    build:
       context: .
       dockerfile: dockerfiles/mysql.dockerfile
     container_name: ${APP_NAME:-docker}-database
     restart: unless-stopped
     environment:
-      - MARIADB_DATABASE=laravel
-      - MARIADB_USER=laravel
-      - MARIADB_PASSWORD=secret
-      - MARIADB_ROOT_PASSWORD=secret
+      - MARIADB_DATABASE=${DB_DATABASE:-laravel}
+      - MARIADB_USER=${DB_USERNAME:-laravel}
+      - MARIADB_PASSWORD=${DB_PASSWORD:-secret}
+      - MARIADB_ROOT_PASSWORD=rootroot
     ports:
       - 3306:3306
     volumes:
@@ -65,7 +65,7 @@ services:
       - mysql
     networks:
       - app-network
-  
+
   artisan:
     build:
       context: .
