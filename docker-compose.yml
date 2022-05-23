@@ -9,7 +9,7 @@ services:
     ports:
       - 80:80
     volumes:
-      - ../:/var/www/html
+      - ./:/var/www/html
     depends_on:
       - php
       - mysql
@@ -22,7 +22,7 @@ services:
       dockerfile: docker/dockerfiles/php.dockerfile
     container_name: php
     volumes:
-      - ../:/var/www/html
+      - ./:/var/www/html
     networks:
       - app-network
 
@@ -48,7 +48,7 @@ services:
     image: node:current-alpine
     container_name: npm
     volumes:
-      - ../:/var/www/html
+      - ./:/var/www/html
     working_dir: /var/www/html
     entrypoint: ["npm"]
     networks:
@@ -58,7 +58,7 @@ services:
     image: composer:latest
     container_name: composer
     volumes:
-      - ../:/var/www/html
+      - ./:/var/www/html
     working_dir: /var/www/html
     depends_on:
       - php
@@ -72,7 +72,7 @@ services:
       dockerfile: docker/dockerfiles/php.dockerfile
     container_name: artisan
     volumes:
-      - ../:/var/www/html
+      - ./:/var/www/html
     working_dir: /var/www/html
     depends_on:
       - php
